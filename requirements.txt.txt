@@ -1,8 +1,0 @@
-streamlit
-skyfield
-geopy
-folium
-streamlit-folium
-plotly
-numpy
-pandas
