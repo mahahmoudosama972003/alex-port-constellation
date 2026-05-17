@@ -685,7 +685,7 @@ with tab2:
             return f"color: {pass_quality_color(val)}"
 
         st.dataframe(
-            pass_df.style.applymap(_style_q, subset=["Pass Quality"]),
+           pass_df.style.map(_style_q, subset=["Pass Quality"]),
             use_container_width=True,
             hide_index=True,
             height=min(40 + len(pass_df) * 35, 520),
