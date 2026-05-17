@@ -1,25 +1,6 @@
 """
 Alexandria Port — Constellation Monitor v3.0
-============================================
-Professional SAR satellite constellation tracker for maritime surveillance.
 
-What's new in v3.0
--------------------
-  • Interactive Folium map  — coverage circles, orbital ground tracks, satellite markers
-  • Detailed pass schedule  — rise / culmination / set, max elevation, duration, quality
-  • Plotly Gantt timeline   — visual pass schedule across the forecast window
-  • Elevation-over-time     — multi-satellite elevation chart with min-elevation threshold
-  • Sky plot (polar)        — azimuth / elevation passes as seen from Alexandria
-  • Coverage gap analysis   — gap histogram + revisit statistics
-  • Constellation diagram   — Walker phase distribution polar chart
-  • CSV export              — download pass schedule with one click
-  • True topocentric angles — replaces geometric approximation (uses Skyfield altaz())
-  • Tab-based layout        — clean four-tab navigation
-  • Syntax bug fixed        — removed stray '1' after st.success()
-
-Requirements
-------------
-    pip install streamlit skyfield geopy folium streamlit-folium plotly numpy pandas
 """
 
 # ─────────────────────────────────────────────
