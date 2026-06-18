@@ -34,15 +34,11 @@ st.set_page_config(
 # ─────────────────────────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Exo+2:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/...');
 
 html, body, [class*="css"] { font-family: 'Exo 2', sans-serif; }
 
 .stApp { background: linear-gradient(135deg, #04080f 0%, #070e1a 50%, #04091a 100%); }
-
-/* ── Hero banner ── */
-.hero-banner {
-    background: linear-gradient(90deg, #071525 0%, #0a2d44 45%, #071525 100%);
     border: 1px solid #174060;
     border-radius: 14px;
     padding: 26px 36px 22px;
