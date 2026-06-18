@@ -1,6 +1,8 @@
 """
-Alexandria Port — Constellation Monitor v4.0
+Alexandria Port — Constellation Monitor v3.0
 ============================================
+Professional SAR satellite constellation tracker for maritime surveillance.
+"""
 
 # ─────────────────────────────────────────────
 # IMPORTS
@@ -32,13 +34,18 @@ st.set_page_config(
 # ─────────────────────────────────────────────
 # CSS — Dark Maritime Theme v3
 # ─────────────────────────────────────────────
+# لاحظ هنا تم استخدام علامات التنصيص الصحيحة بدون أي حروف f
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/...');
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Exo+2:wght@300;400;600;700&display=swap');
 
 html, body, [class*="css"] { font-family: 'Exo 2', sans-serif; }
 
 .stApp { background: linear-gradient(135deg, #04080f 0%, #070e1a 50%, #04091a 100%); }
+
+/* ── Hero banner ── */
+.hero-banner {
+    background: linear-gradient(90deg, #071525 0%, #0a2d44 45%, #071525 100%);
     border: 1px solid #174060;
     border-radius: 14px;
     padding: 26px 36px 22px;
@@ -170,16 +177,12 @@ DEFAULT_COVERAGE   = 600   # km
 ORBIT_PERIOD_MIN   = int(24 * 60 / 15.22)   # ≈ 95 min
 
 # ─────────────────────────────────────────────
-# TLE DATA  (SAR Walker constellation, 32° / 550 km)
-# ─────────────────────────────────────────────
-# ─────────────────────────────────────────────
 # TLE DATA  (Walker Delta 3/3/1 Constellation, 32° / 550 km)
 # ─────────────────────────────────────────────
 TLE_DATA = [
     {
         "name":       "SAR-Alpha",
         "line1":      "1 99991U 26001A   26132.50000000  .00000000  00000-0  00000-0 0  9994",
-        # RAAN = 0.0000, Mean Anomaly = 0.0000
         "line2":      "2 99991  32.0000   0.0000 0001000   0.0000   0.0000 15.22000000    05",
         "color":      "#00d4ff",
         "fill_rgba":  "rgba(0,212,255,0.07)",
@@ -187,7 +190,6 @@ TLE_DATA = [
     {
         "name":       "SAR-Beta",
         "line1":      "1 99992U 26001B   26132.50000000  .00000000  00000-0  00000-0 0  9995",
-        # RAAN = 120.0000, Mean Anomaly = 120.0000
         "line2":      "2 99992  32.0000 120.0000 0001000   0.0000 120.0000 15.22000000    00",
         "color":      "#00ffaa",
         "fill_rgba":  "rgba(0,255,170,0.07)",
@@ -195,7 +197,6 @@ TLE_DATA = [
     {
         "name":       "SAR-Gamma",
         "line1":      "1 99993U 26001C   26132.50000000  .00000000  00000-0  00000-0 0  9996",
-        # RAAN = 240.0000, Mean Anomaly = 240.0000
         "line2":      "2 99993  32.0000 240.0000 0001000   0.0000 240.0000 15.22000000    04",
         "color":      "#ffaa00",
         "fill_rgba":  "rgba(255,170,0,0.07)",
@@ -213,7 +214,6 @@ def fmt_countdown(td: timedelta) -> str:
     m, s   = divmod(rem, 60)
     return f"{h:02d}h {m:02d}m {s:02d}s"
 
-
 def get_ground_track(sat, ts, t_start: datetime, minutes: int = 100, step: int = 2):
     """Return list of (lat, lon) tuples for the satellite's future ground track."""
     coords = []
@@ -222,7 +222,6 @@ def get_ground_track(sat, ts, t_start: datetime, minutes: int = 100, step: int =
         sp = sat.at(t).subpoint()
         coords.append((sp.latitude.degrees, sp.longitude.degrees))
     return coords
-
 
 def compute_passes(sat, target, ts, t0, t1, min_el: float = 0.0):
     """Compute structured pass dicts (rise/culmination/set) for one satellite."""
@@ -250,9 +249,7 @@ def compute_passes(sat, target, ts, t0, t1, min_el: float = 0.0):
         pass
     return passes
 
-
-def elevation_series(sat, target, ts, t_start: datetime,
-                     hours: float = 48, step_min: int = 10) -> pd.DataFrame:
+def elevation_series(sat, target, ts, t_start: datetime, hours: float = 48, step_min: int = 10) -> pd.DataFrame:
     """Return DataFrame(time, elevation°, azimuth°) over the given window."""
     rows, n = [], int(hours * 60 / step_min)
     for i in range(n):
@@ -262,18 +259,15 @@ def elevation_series(sat, target, ts, t_start: datetime,
         rows.append({"time": dt, "elevation": max(0.0, alt.degrees), "azimuth": az.degrees})
     return pd.DataFrame(rows)
 
-
 def pass_quality(max_el: float) -> str:
     if max_el >= 60: return "⭐ EXCELLENT"
     if max_el >= 30: return "HIGH"
     if max_el >= 15: return "MEDIUM"
     return "LOW"
 
-
 def pass_quality_color(q: str) -> str:
     return {"⭐ EXCELLENT": "#00ff88", "HIGH": "#00d4ff",
             "MEDIUM": "#ffaa00", "LOW": "#ff6644"}.get(q, "#6cb8d4")
-
 
 # ─────────────────────────────────────────────
 # SIDEBAR
@@ -290,11 +284,9 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("###  Live Tracking")
+    st.markdown("### 🔄 Live Tracking")
     auto_refresh = st.checkbox("Enable Auto-Refresh", value=True)
     refresh_rate = st.slider("Refresh Interval (sec)", 5, 60, 10, 5)
-    if auto_refresh:
-        st.success(f"Auto-refreshing every {refresh_rate}s")
 
     st.markdown("---")
     st.markdown("### ⚙️ Mission Parameters")
@@ -382,8 +374,7 @@ for sat, meta in zip(sats, TLE_DATA):
     if in_cov:
         in_coverage_now += 1
 
-    ground_track = get_ground_track(sat, ts, t0_dt, minutes=ORBIT_PERIOD_MIN, step=2) \
-                   if show_tracks else []
+    ground_track = get_ground_track(sat, ts, t0_dt, minutes=ORBIT_PERIOD_MIN, step=2) if show_tracks else []
 
     results.append({
         "name":       sat.name,
@@ -473,8 +464,6 @@ tab1, tab2, tab3, tab4 = st.tabs([
 #  TAB 1 — LIVE DASHBOARD
 # ══════════════════════════════════════════════════════════════════════
 with tab1:
-
-    # ── Alert banner ──────────────────────────────────────────────────
     if in_coverage_now > 0:
         names = ", ".join(r["name"] for r in results if r["in_cov"])
         verb  = "is" if in_coverage_now == 1 else "are"
@@ -497,7 +486,6 @@ with tab1:
 
     st.markdown("")
 
-    # ── Satellite status cards ─────────────────────────────────────────
     st.markdown('<div class="section-header">Satellite Status</div>', unsafe_allow_html=True)
     cols = st.columns(3)
 
@@ -541,7 +529,6 @@ with tab1:
             st.metric("Next Pass ETA", res["next_label"])
             st.caption(f"📍 {res['lat']:.3f}°N  /  {res['lon']:.3f}°E")
 
-    # ── Interactive Folium Map ─────────────────────────────────────────
     st.markdown('<div class="section-header">Interactive Ground Track Map</div>',
                 unsafe_allow_html=True)
 
@@ -551,7 +538,6 @@ with tab1:
         tiles="CartoDB dark_matter",
     )
 
-    # Coverage circle
     if show_cov_circle:
         folium.Circle(
             location=[ALEX_LAT, ALEX_LON],
@@ -560,7 +546,6 @@ with tab1:
             opacity=0.35,
             tooltip=f"Coverage Zone: {coverage_radius} km",
         ).add_to(fmap)
-        # Inner "critical zone" (50% radius)
         folium.Circle(
             location=[ALEX_LAT, ALEX_LON],
             radius=(coverage_radius // 2) * 1000,
@@ -569,7 +554,6 @@ with tab1:
             tooltip=f"Inner Zone: {coverage_radius//2} km",
         ).add_to(fmap)
 
-    # Alexandria port anchor marker
     folium.Marker(
         location=[ALEX_LAT, ALEX_LON],
         icon=folium.DivIcon(html="""
@@ -580,9 +564,7 @@ with tab1:
         popup=folium.Popup("Alexandria Port — Primary Target Site", max_width=200),
     ).add_to(fmap)
 
-    # Satellites
     for res in results:
-        # Current position dot
         folium.Marker(
             location=[res["lat"], res["lon"]],
             icon=folium.DivIcon(html=f"""
@@ -605,7 +587,6 @@ with tab1:
             ),
         ).add_to(fmap)
 
-        # Satellite name label
         folium.Marker(
             location=[res["lat"] + 2.0, res["lon"]],
             icon=folium.DivIcon(html=f"""
@@ -616,7 +597,6 @@ with tab1:
                 </div>"""),
         ).add_to(fmap)
 
-        # Ground track (handle anti-meridian splits)
         if show_tracks and res["track"]:
             segs, prev = [[]], None
             for lat_g, lon_g in res["track"]:
@@ -642,7 +622,6 @@ with tab2:
                 unsafe_allow_html=True)
 
     if all_passes:
-        # ── Pass table ────────────────────────────────────────────────
         rows = []
         for p in all_passes:
             rise = p["rise"]
@@ -681,7 +660,6 @@ with tab2:
             mime="text/csv",
         )
 
-        # ── Stats row ─────────────────────────────────────────────────
         st.markdown("")
         s1, s2, s3, s4 = st.columns(4)
         durations = [p.get("duration_s", 0) for p in all_passes if p.get("duration_s")]
@@ -690,7 +668,6 @@ with tab2:
         s3.metric("Best Max Elev.",  f"{max(p.get('max_el',0) for p in all_passes):.1f}°")
         s4.metric("Next Pass",       next_any_eta, next_any["sat_name"] if next_any else None)
 
-        # ── Gantt timeline ────────────────────────────────────────────
         st.markdown('<div class="section-header">Pass Timeline</div>',
                     unsafe_allow_html=True)
 
@@ -742,8 +719,6 @@ with tab2:
 #  TAB 3 — ANALYTICS
 # ══════════════════════════════════════════════════════════════════════
 with tab3:
-
-    # ── Elevation over time ───────────────────────────────────────────
     st.markdown('<div class="section-header">Elevation Angle Over Time</div>',
                 unsafe_allow_html=True)
 
@@ -784,7 +759,6 @@ with tab3:
     )
     st.plotly_chart(fig_el, use_container_width=True)
 
-    # ── Sky plot ─────────────────────────────────────────────────────
     st.markdown('<div class="section-header">Sky Plot  (Azimuth / Elevation)</div>',
                 unsafe_allow_html=True)
     st.caption(
@@ -850,7 +824,6 @@ with tab3:
     )
     st.plotly_chart(fig_sky, use_container_width=True)
 
-    # ── Coverage gap analysis ─────────────────────────────────────────
     st.markdown('<div class="section-header">Coverage Gap Analysis</div>',
                 unsafe_allow_html=True)
 
@@ -893,8 +866,6 @@ with tab3:
 #  TAB 4 — CONSTELLATION CONFIG
 # ══════════════════════════════════════════════════════════════════════
 with tab4:
-
-    # ── Orbital parameters table ──────────────────────────────────────
     st.markdown('<div class="section-header">Current Orbital Parameters</div>',
                 unsafe_allow_html=True)
 
@@ -913,7 +884,6 @@ with tab4:
 
     st.dataframe(orbit_df, use_container_width=True, hide_index=True)
 
-    # ── TLE raw data ──────────────────────────────────────────────────
     st.markdown('<div class="section-header">Two-Line Element Sets (TLE)</div>',
                 unsafe_allow_html=True)
 
@@ -924,14 +894,12 @@ with tab4:
                 st.code(f"{meta['name']}\n{meta['line1']}\n{meta['line2']}",
                         language="text")
 
-    # ── Walker constellation diagram ──────────────────────────────────
     st.markdown('<div class="section-header">Constellation Phase Distribution</div>',
                 unsafe_allow_html=True)
 
     phases = [0, 120, 240]
     fig_const = go.Figure()
 
-    # Orbit ring
     ring_t = list(range(361))
     fig_const.add_trace(go.Scatterpolar(
         r=[1] * 361, theta=ring_t,
@@ -939,7 +907,6 @@ with tab4:
         line=dict(color="#1a3a52", width=1.5, dash="dot"),
         showlegend=False, hoverinfo="skip",
     ))
-    # Coverage arcs (120° each)
     for ph, res in zip(phases, results):
         arc_t = [(ph - 60 + i) % 360 for i in range(121)]
         fig_const.add_trace(go.Scatterpolar(
@@ -949,7 +916,6 @@ with tab4:
             opacity=0.25,
             showlegend=False, hoverinfo="skip",
         ))
-        # Spoke + dot
         fig_const.add_trace(go.Scatterpolar(
             r=[0, 1], theta=[ph, ph],
             mode="lines+markers+text",
@@ -989,7 +955,6 @@ with tab4:
     )
     st.plotly_chart(fig_const, use_container_width=True)
 
-    # ── Constellation summary stats ───────────────────────────────────
     st.markdown('<div class="section-header">Constellation Health Summary</div>',
                 unsafe_allow_html=True)
 
