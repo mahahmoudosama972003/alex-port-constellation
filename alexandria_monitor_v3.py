@@ -1,7 +1,6 @@
 """
-Alexandria Port — Constellation Monitor v3.0
-
-"""
+Alexandria Port — Constellation Monitor v4.0
+============================================
 
 # ─────────────────────────────────────────────
 # IMPORTS
@@ -177,10 +176,14 @@ ORBIT_PERIOD_MIN   = int(24 * 60 / 15.22)   # ≈ 95 min
 # ─────────────────────────────────────────────
 # TLE DATA  (SAR Walker constellation, 32° / 550 km)
 # ─────────────────────────────────────────────
+# ─────────────────────────────────────────────
+# TLE DATA  (Walker Delta 3/3/1 Constellation, 32° / 550 km)
+# ─────────────────────────────────────────────
 TLE_DATA = [
     {
         "name":       "SAR-Alpha",
         "line1":      "1 99991U 26001A   26132.50000000  .00000000  00000-0  00000-0 0  9994",
+        # RAAN = 0.0000, Mean Anomaly = 0.0000
         "line2":      "2 99991  32.0000   0.0000 0001000   0.0000   0.0000 15.22000000    05",
         "color":      "#00d4ff",
         "fill_rgba":  "rgba(0,212,255,0.07)",
@@ -188,14 +191,16 @@ TLE_DATA = [
     {
         "name":       "SAR-Beta",
         "line1":      "1 99992U 26001B   26132.50000000  .00000000  00000-0  00000-0 0  9995",
-        "line2":      "2 99992  32.0000   0.0000 0001000   0.0000 120.0000 15.22000000    00",
+        # RAAN = 120.0000, Mean Anomaly = 120.0000
+        "line2":      "2 99992  32.0000 120.0000 0001000   0.0000 120.0000 15.22000000    00",
         "color":      "#00ffaa",
         "fill_rgba":  "rgba(0,255,170,0.07)",
     },
     {
         "name":       "SAR-Gamma",
         "line1":      "1 99993U 26001C   26132.50000000  .00000000  00000-0  00000-0 0  9996",
-        "line2":      "2 99993  32.0000   0.0000 0001000   0.0000 240.0000 15.22000000    04",
+        # RAAN = 240.0000, Mean Anomaly = 240.0000
+        "line2":      "2 99993  32.0000 240.0000 0001000   0.0000 240.0000 15.22000000    04",
         "color":      "#ffaa00",
         "fill_rgba":  "rgba(255,170,0,0.07)",
     },
@@ -289,7 +294,7 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("### 🔄 Live Tracking")
+    st.markdown("###  Live Tracking")
     auto_refresh = st.checkbox("Enable Auto-Refresh", value=True)
     refresh_rate = st.slider("Refresh Interval (sec)", 5, 60, 10, 5)
     if auto_refresh:
