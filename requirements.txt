@@ -1,8 +1,10 @@
 streamlit
-skyfield
-geopy
-folium
-streamlit-folium
-plotly
 numpy
 pandas
+plotly
+folium
+streamlit-folium
+skyfield
+geopy
+PyYAML
+fpdf2
